@@ -1,0 +1,28 @@
+package {{.LowerName}}
+
+import (
+    "github.com/backenderia/garf/server"
+)
+
+func (b *bundle) prepare(c server.Context) {{.CapitalName}} {
+	id := b.server.Param(c, "id")
+
+	q := {{.CapitalName}}{
+		ID:   id,
+	}
+
+	return q
+}
+
+func (b *bundle) handler(f ModelHandler) server.HttpHandler {
+	return func(c server.Context) error {
+		query := b.prepare(c)
+
+		result, err := f(query)
+		if err != nil {
+			return b.server.Error(c, 500, err)
+		}
+
+		return b.server.JSON(c, result)
+	}
+}

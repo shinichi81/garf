@@ -1,0 +1,19 @@
+package garf
+{{$rootpath := .rootpath}}
+
+import (
+    "github.com/backenderia/garf/registry"
+    "github.com/backenderia/garf/server/{{.engine}}"
+{{range .bundles}}    "{{$rootpath}}/{{.Path}}"
+{{end}})
+
+func Registry() registry.Handler {
+
+    // Creating new registry
+    r := registry.New({{.engine}}.New())
+
+    // Registering bundles
+    {{range .bundles}}r.Register({{.Name}}.New())
+    {{end}}
+    return r
+}

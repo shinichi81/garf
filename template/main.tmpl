@@ -1,0 +1,20 @@
+package main
+
+import (
+    "{{.rootpath}}/garf"
+)
+
+func main () {
+    r := garf.Registry()
+
+    // Define your API global configuration here.
+    // Example:
+    // r.Set("URI", databaseURI)
+
+    // Add your middleware here.
+    // Example:
+    // r.Http().Use(example.Middleware())
+
+    r.Configure()
+    r.Server().Run(":3000")
+}
