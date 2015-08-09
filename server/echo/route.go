@@ -1,10 +1,17 @@
 package echo
 
-import "github.com/backenderia/garf/server"
+import (
+	"github.com/backenderia/garf/server"
+	"github.com/labstack/echo"
+)
 
 // Get forwards to echo.Use
-func (e *echoHandler) Use(handler server.HttpHandler) {
-	e.echo.Use(e.contextWrapper(handler))
+func (e *echoHandler) Use(m ...server.Middleware) {
+	em := []echo.Middleware{}
+	for _, h := range m {
+		em = append(em, h.(echo.Middleware))
+	}
+	e.echo.Use(em...)
 }
 
 // Get forwards to echo.Get

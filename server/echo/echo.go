@@ -37,6 +37,11 @@ func (e *echoHandler) Run(d string) {
 func (e *echoHandler) Configure() {
 }
 
+// Server returns the echo instance
+func (e *echoHandler) Server() interface{} {
+	return e.echo
+}
+
 func (e *echoHandler) contextWrapper(h server.HttpHandler) func(*echo.Context) error {
 	return func(c *echo.Context) (result error) {
 		ec := e.pool.Get().(*echoContext)

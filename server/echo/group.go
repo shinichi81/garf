@@ -1,8 +1,8 @@
 package echo
 
 import (
-	"github.com/labstack/echo"
 	"github.com/backenderia/garf/server"
+	"github.com/labstack/echo"
 )
 
 type echoGroup struct {
@@ -20,8 +20,8 @@ func (e *echoHandler) Group(d string) server.Router {
 }
 
 // Get forwards to echo.Group.Use
-func (g *echoGroup) Use(handler server.HttpHandler) {
-	g.group.Use(g.echo.contextWrapper(handler))
+func (g *echoGroup) Use(handler ...server.Middleware) {
+	g.group.Use(handler)
 }
 
 // Get forwards to echo.Group.Get

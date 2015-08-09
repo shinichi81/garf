@@ -2,10 +2,13 @@
 
 A (one-code-to-rule-them-all) **G**olang **A**PI (**R**estful) **F**ramework and factory.
 
-## Features
+## Use Cases
 
+## Features / Uses
+
+- Generate a simple RESTful API using command line
 - Same code to run on any supported framework
-- Rich collection of supported middlewares
+- Rich collection of supported middlewares and helpers
 - Easy to create bundles or import existing one
 - Customizable bootstrap templates
 
@@ -13,13 +16,14 @@ A (one-code-to-rule-them-all) **G**olang **A**PI (**R**estful) **F**ramework and
 
 - [echo](http://github.com/labstack/echo)
 * (not yet) [gin-gonic](#)
-* (not yet) [gorilla mux](#)
-* (not yet) [martini + negroni](#)
+* (not yet) [gorilla mux + negroni](#)
 
 ## Supported middleware collection
 
 - [Garf collection](http://github.com/backenderia/garf-contrib)
 - [Echo collection](#)
+- [Gin-gonic collection](#)
+- [Negroni collection](#)
 
 ## Installation
 
@@ -27,7 +31,7 @@ A (one-code-to-rule-them-all) **G**olang **A**PI (**R**estful) **F**ramework and
 $ go install github.com/backenderia/garf
 ```
 
-## Usage
+## Command Usage
 
 ```shell
 $ garf help
@@ -40,9 +44,17 @@ $ garf help
 
 ## Guides
 
-- [Creating your API](#)
-- [Creating multiple bundles](#)
+- [Creating RESTful API](#)
+- [Creating multiple bundles on your API](#)
 - [Using other frameworks middlewares](#)
+
+## Stable milestone
+
+- [] Echo support
+- [] Gin support
+- [] Mux + Negroni support
+- Complete test coverage
+- Complete management using command line tool
 
 ## Contribute
 

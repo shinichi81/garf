@@ -8,11 +8,13 @@ import (
 
 // HttpHandler alias for any interface that handles requests
 type HttpHandler func(Context) error
+type Middleware interface{}
 
 // Handler represents the HTTP server interface
 type Handler interface {
 	Configure()
 	Run(string)
+	Server() interface{}
 	Group(string) Router
 	Router
 	ContextInfo
@@ -20,7 +22,7 @@ type Handler interface {
 }
 
 type Router interface {
-	Use(HttpHandler)
+	Use(...Middleware)
 	Any(string, HttpHandler)
 	Get(string, HttpHandler)
 	Put(string, HttpHandler)
@@ -47,6 +49,12 @@ type Default struct{}
 // Configure default method
 func (d *Default) Configure() { log.Println("Configure() not implemented on this server framework") }
 
+// Server default method
+func (d *Default) Server() interface{} {
+	log.Println("Server() not implemented on this server framework")
+	return nil
+}
+
 // Run default method
 func (d *Default) Run(x string) { log.Println("Run() not implemented on this server framework") }
 
@@ -54,7 +62,7 @@ func (d *Default) Run(x string) { log.Println("Run() not implemented on this ser
 func (d *Default) Group(x string) { log.Println("Group() not implemented on this server framework") }
 
 // Use default method
-func (d *Default) Use(x HttpHandler) {
+func (d *Default) Use(x Middleware) {
 	log.Println("Use() not implemented on this server framework")
 }
 
