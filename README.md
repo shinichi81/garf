@@ -1,4 +1,4 @@
-# [garf](http://open.backenderia.com/garf/)
+# [garf](http://open.backenderia.com/garf/) [![Build Status](https://img.shields.io/travis/backenderia/garf.svg?style=flat-square)](https://travis-ci.org/backenderia/garf)
 
 A (one-code-to-rule-them-all) **G**olang **A**PI (**R**estful) **F**ramework and factory.
 
@@ -50,11 +50,11 @@ $ garf help
 
 ## Stable milestone
 
-- [] Echo support
-- [] Gin support
-- [] Mux + Negroni support
-- Complete test coverage
-- Complete management using command line tool
+- [ ] Echo support
+- [ ] Gin support
+- [ ] Mux + Negroni support
+- [ ] Complete test coverage
+- [ ] Complete management using command line tool
 
 ## Contribute
 
