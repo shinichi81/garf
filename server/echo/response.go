@@ -13,6 +13,10 @@ func (e *echoHandler) JSON(c server.Context, d interface{}) error {
 
 // Error forwards to echo.Error
 func (e *echoHandler) Error(c server.Context, code int, d ...interface{}) error {
+	if len(d) == 0 {
+		return echo.NewHTTPError(code)
+	}
+
 	switch v := d[0].(type) {
 	case error:
 		return echo.NewHTTPError(code, v.Error())

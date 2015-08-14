@@ -6,32 +6,34 @@ import (
 	"golang.org/x/net/websocket"
 )
 
-// HttpHandler alias for any interface that handles requests
-type HttpHandler func(Context) error
+// Handler alias for any interface that handles requests
+type Handler interface{}
+type HandlerFunc func(Context) error
 type Middleware interface{}
 
-// Handler represents the HTTP server interface
-type Handler interface {
+// Support represents the HTTP server interface
+type Support interface {
 	Configure()
 	Run(string)
-	Server() interface{}
-	Group(string) Router
 	Router
 	ContextInfo
 	RESTResponse
 }
 
 type Router interface {
+	Server() interface{}
+	Group(string) Router
 	Use(...Middleware)
-	Any(string, HttpHandler)
-	Get(string, HttpHandler)
-	Put(string, HttpHandler)
-	Post(string, HttpHandler)
-	Del(string, HttpHandler)
-	Patch(string, HttpHandler)
-	Options(string, HttpHandler)
-	Head(string, HttpHandler)
-	Handle(string, string, HttpHandler)
+	Any(string, HandlerFunc)
+	Get(string, HandlerFunc)
+	Put(string, HandlerFunc)
+	Post(string, HandlerFunc)
+	Del(string, HandlerFunc)
+	Patch(string, HandlerFunc)
+	Options(string, HandlerFunc)
+	Head(string, HandlerFunc)
+	WebSocket(string, HandlerFunc)
+	Handle(string, string, HandlerFunc)
 }
 
 type RESTResponse interface {
@@ -67,47 +69,52 @@ func (d *Default) Use(x Middleware) {
 }
 
 // Any default method
-func (d *Default) Any(x string, y HttpHandler) {
+func (d *Default) Any(x string, y HandlerFunc) {
 	log.Println("Any() not implemented on this server framework")
 }
 
 // Get default method
-func (d *Default) Get(x string, y HttpHandler) {
+func (d *Default) Get(x string, y HandlerFunc) {
 	log.Println("Get() not implemented on this server framework")
 }
 
 // Put default method
-func (d *Default) Put(x string, y HttpHandler) {
+func (d *Default) Put(x string, y HandlerFunc) {
 	log.Println("Put() not implemented on this server framework")
 }
 
 // Post default method
-func (d *Default) Post(x string, y HttpHandler) {
+func (d *Default) Post(x string, y HandlerFunc) {
 	log.Println("Post() not implemented on this server framework")
 }
 
 // Del default method
-func (d *Default) Del(x string, y HttpHandler) {
+func (d *Default) Del(x string, y HandlerFunc) {
 	log.Println("Del() not implemented on this server framework")
 }
 
 // Patch default method
-func (d *Default) Patch(x string, y HttpHandler) {
+func (d *Default) Patch(x string, y HandlerFunc) {
 	log.Println("Patch() not implemented on this server framework")
 }
 
 // Options default method
-func (d *Default) Options(x string, y HttpHandler) {
+func (d *Default) Options(x string, y HandlerFunc) {
 	log.Println("Options() not implemented on this server framework")
 }
 
 // Head default method
-func (d *Default) Head(x string, y HttpHandler) {
+func (d *Default) Head(x string, y HandlerFunc) {
 	log.Println("Head() not implemented on this server framework")
 }
 
+// WebSocket default method
+func (d *Default) WebSocket(x, string, y HandlerFunc) {
+	log.Println("WebSocket() not implemented on this server framework")
+}
+
 // Handle default method
-func (d *Default) Handle(x, y string, z HttpHandler) {
+func (d *Default) Handle(x, y string, z HandlerFunc) {
 	log.Println("Handle() not implemented on this server framework")
 }
 

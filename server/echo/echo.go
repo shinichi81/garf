@@ -10,12 +10,13 @@ import (
 
 type echoHandler struct {
 	*server.Default
-	pool sync.Pool
-	echo *echo.Echo
+	pool   sync.Pool
+	echo   *echo.Echo
+	prefix string
 }
 
 // New creates a new Registry for this server
-func New() server.Handler {
+func New() server.Support {
 	e := echo.New()
 
 	echo := &echoHandler{
@@ -42,14 +43,15 @@ func (e *echoHandler) Server() interface{} {
 	return e.echo
 }
 
-func (e *echoHandler) contextWrapper(h server.HttpHandler) func(*echo.Context) error {
-	return func(c *echo.Context) (result error) {
-		ec := e.pool.Get().(*echoContext)
-		ec.ctx = c
-		result = h(ec)
-		e.pool.Put(ec)
-		return
+// Group creates a new echoGroup
+func (e *echoHandler) Group(d string) server.Router {
+	group := &echoGroup{
+		group: e.echo.Group(d),
 	}
+	group.pool.New = func() interface{} {
+		return NewEchoContext()
+	}
+	return group
 }
 
 // Param forwards to echo.Context.Param

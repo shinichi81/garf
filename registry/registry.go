@@ -8,7 +8,7 @@ import (
 // Handler is the package exported API
 type Handler interface {
 	Register(Bundle)
-	Server() server.Handler
+	Server() server.Support
 	Set(key string, value interface{})
 	Get(key string)
 	Configure()
@@ -22,12 +22,12 @@ type Bundle interface {
 
 type registry struct {
 	config  *viper.Viper
-	server  server.Handler
+	server  server.Support
 	bundles []Bundle
 }
 
 // New creates registry instance
-func New(server server.Handler) Handler {
+func New(server server.Support) Handler {
 	c := viper.New()
 	r := &registry{
 		config: c,
@@ -43,7 +43,7 @@ func (r *registry) Register(bundle Bundle) {
 }
 
 // Server returns the Server instance
-func (r *registry) Server() server.Handler {
+func (r *registry) Server() server.Support {
 	return r.server
 }
 

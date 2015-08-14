@@ -1,105 +1,107 @@
 package echo_test
 
 import (
-	"bytes"
-	"net/http"
+	"fmt"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/backenderia/garf/server"
 	_echo "github.com/backenderia/garf/server/echo"
 	"github.com/labstack/echo"
 	. "github.com/smartystreets/goconvey/convey"
+	"golang.org/x/net/websocket"
 )
 
-type routeMethod func(string, server.HttpHandler)
-
-func TestEchoRouteMethodSupport(t *testing.T) {
-	Convey("Given a server.Echo", t, func() {
+func TestEchoSupport(t *testing.T) {
+	Convey("Given a new garf's echo server...", t, func() {
 		s := _echo.New()
-		e := (s.Server()).(*echo.Echo)
-		r := e.Router()
-
-		tests := []struct {
-			name   string
-			method string
-			router routeMethod
-		}{
-			{"echo.Get", "GET", s.Get},
-			{"echo.Post", "POST", s.Post},
-			{"echo.Put", "PUT", s.Put},
-			{"echo.Del", "DELETE", s.Del},
-			{"echo.Patch", "PATCH", s.Patch},
-			{"echo.Options", "OPTIONS", s.Options},
-			{"echo.Head", "HEAD", s.Head},
-		}
-
-		for _, test := range tests {
-			Convey("When adding a handler for the method "+test.name, func() {
-				resp := []byte(test.name)
-				handler := func(c server.Context) error {
-					c.Response().WriteHeader(http.StatusOK)
-					c.Response().Write(resp)
-					return nil
-				}
-
-				test.router("/"+test.name, handler)
-				req, _ := http.NewRequest(test.method, "/"+test.name, nil)
-				w := httptest.NewRecorder()
-				r.ServeHTTP(w, req)
-
-				Convey("The reponse status should be 200", func() {
-					So(w.Code, ShouldEqual, http.StatusOK)
-				})
-				Convey("The reponse body should be OK", func() {
-					So(bytes.Equal(w.Body.Bytes(), resp), ShouldBeTrue)
-				})
-			})
-		}
+		Convey("The method echo.Server() should return a valid *echo.Echo", func() {
+			_, isEcho := (s.Server()).(*echo.Echo)
+			So(isEcho, ShouldBeTrue)
+		})
 	})
 }
 
-func TestEchoMiddlewareSupport(t *testing.T) {
-	passed := false
-	tests := []struct {
-		name    string
-		handler interface{}
-	}{
-		{"echo-default", func(c *echo.Context) error {
-			passed = true
-			return nil
-		}},
-		{"http-default", func(w http.ResponseWriter, h *http.Request) {
-			passed = true
-		}},
-		{"echo-default-wrap", func(h echo.HandlerFunc) echo.HandlerFunc {
-			return func(c *echo.Context) error {
-				passed = true
+func TestEchoSupportParam(t *testing.T) {
+	Convey("Given a echo.Server", t, func() {
+		s := _echo.New()
+		e := (s.Server()).(*echo.Echo)
+		Convey("When adding a handler to a request with parameters", func() {
+			param := ""
+			s.Get("/:param", func(c server.Context) error {
+				param = s.Param(c, "param")
 				return nil
-			}
-		}},
-	}
-
-	for _, test := range tests {
-		Convey("Given a server.Echo", t, func() {
-			s := _echo.New()
-			e := (s.Server()).(*echo.Echo)
-			Convey("When adding the handler: "+test.name, func() {
-				s.Use(test.handler)
-				passed = false
-				request("GET", "/", e)
-
-				Convey("The flag passed should be TRUE", func() {
-					So(passed, ShouldBeTrue)
-				})
+			})
+			request("GET", "/123", e)
+			Convey("The response Param() should be 123", func() {
+				So(param, ShouldEqual, "123")
 			})
 		})
-	}
+	})
 }
 
-func request(method, path string, e *echo.Echo) (int, string) {
-	r, _ := http.NewRequest(method, path, nil)
-	w := httptest.NewRecorder()
-	e.ServeHTTP(w, r)
-	return w.Code, w.Body.String()
+func TestEchoSupportForm(t *testing.T) {
+	Convey("Given a echo.Server", t, func() {
+		s := _echo.New()
+		e := (s.Server()).(*echo.Echo)
+		Convey("When adding a handler to a request using form", func() {
+			f := make(url.Values)
+			f.Set("form", "123")
+
+			form := ""
+			s.Post("/", func(c server.Context) error {
+				form = s.Form(c, "form")
+				return nil
+			})
+
+			requestPost("POST", "/", strings.NewReader(f.Encode()), e)
+
+			Convey("The response Form() should be 123", func() {
+				So(form, ShouldEqual, "123")
+			})
+		})
+	})
+}
+
+func TestEchoSupportQuery(t *testing.T) {
+	Convey("Given a echo.Server", t, func() {
+		s := _echo.New()
+		e := (s.Server()).(*echo.Echo)
+		Convey("When adding a handler to a request with query", func() {
+			query := ""
+			s.Get("/", func(c server.Context) error {
+				query = s.Query(c, "q")
+				return nil
+			})
+			request("GET", "/?q=123", e)
+			Convey("The response Query() should be 123", func() {
+				So(query, ShouldEqual, "123")
+			})
+		})
+	})
+}
+
+func TestEchoSupportSocket(t *testing.T) {
+	Convey("Given a echo.Server", t, func() {
+		s := _echo.New()
+		e := (s.Server()).(*echo.Echo)
+		Convey("An attached handler to a WebSocket request that calls server.Socket(context)", func() {
+			var sock *websocket.Conn
+			s.WebSocket("/ws", func(c server.Context) error {
+				sock = s.Socket(c)
+				return nil
+			})
+			srv := httptest.NewServer(e)
+			defer srv.Close()
+			addr := srv.Listener.Addr().String()
+			origin := "http://localhost"
+			url := fmt.Sprintf("ws://%s/ws", addr)
+			websocket.Dial(url, "", origin)
+			Convey("Socket() should return a valid *websocket.Conn", func() {
+				So(sock, ShouldNotBeNil)
+			})
+		})
+	})
 }
