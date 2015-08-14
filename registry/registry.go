@@ -17,7 +17,7 @@ type Handler interface {
 // Bundle is the interface for bundles
 type Bundle interface {
 	Init(map[string]interface{})
-	Register(server.Handler)
+	Register(server.Support)
 }
 
 type registry struct {

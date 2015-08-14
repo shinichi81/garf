@@ -14,8 +14,8 @@ import (
 
 var GarfCmd = &cobra.Command{
 	Use:   "garf",
-	Short: "GAPI is a simple API generator",
-	Long:  `GAPI generates a simple API, structure and its modules, using Mux and Martini.`,
+	Short: "This tool helps you to generate and manage your GARF RESTful APIs",
+	Long:  `This tool helps you to generate and manage your GARF RESTful APIs`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Usage()
 	},

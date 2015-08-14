@@ -38,7 +38,7 @@ func NewApi(cmd *cobra.Command, args []string) {
 
 	cwd := viper.GetString("WorkingDir")
 	path := cwd
-	log.Println("Creating gAPI in:", path)
+	log.Println("Creating garf API in:", path)
 
 	mkdir(cwd)
 	mkdir(cwd, "garf")
