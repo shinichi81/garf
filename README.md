@@ -2,8 +2,6 @@
 
 A (one-code-to-rule-them-all) **G**olang **A**PI (**R**estful) **F**ramework and factory.
 
-## Use Cases
-
 ## Features / Uses
 
 - Generate a simple RESTful API using command line
@@ -50,7 +48,7 @@ $ garf help
 
 ## Stable milestone
 
-- [ ] Echo support
+- [x] Echo support
 - [ ] Gin support
 - [ ] Mux + Negroni support
 - [ ] Complete test coverage
