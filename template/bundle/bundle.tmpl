@@ -9,9 +9,7 @@ const (
     basePath = "/{{.LowerName}}/"
 )
 
-type bundle struct {
-	server server.Handler
-}
+type bundle struct {}
 
 func New() registry.Bundle {
     return &bundle{}
@@ -24,12 +22,9 @@ func (b *bundle) Init(config map[string]interface{}) {
 
 // Register is called to register all routes from this bundle
 func (b *bundle) Register(r server.Handler) {
-	b.server = r
-
-	route := r.Group(basePath)
-	route.Get("", b.handler(List))
-	route.Post("", b.handler(Create))
-	route.Get(":id", b.handler(Read))
-	route.Post(":id", b.handler(Update))
-	route.Del(":id", b.handler(Delete))
+	r.Get(basePath+"/user/", b.handler(List))
+	r.Post(basePath+"/", b.handler(Create))
+	r.Get(basePath+"/:id", b.handler(Read))
+	r.Post(basePath+"/:id", b.handler(Update))
+	r.Del(basePath+"/:id", b.handler(Delete))
 }

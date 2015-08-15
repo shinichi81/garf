@@ -6,6 +6,7 @@ import (
 
 func main () {
     r := garf.Registry()
+    s := r.Server()
 
     // Define your API global configuration here.
     // Example:
@@ -13,8 +14,8 @@ func main () {
 
     // Add your middleware here.
     // Example:
-    // r.Http().Use(example.Middleware())
+    // s.Use(example.Middleware())
 
     r.Configure()
-    r.Server().Run(":3000")
+    s.Run(":3000")
 }

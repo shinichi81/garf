@@ -5,7 +5,7 @@ import (
 )
 
 func (b *bundle) prepare(c server.Context) {{.CapitalName}} {
-	id := b.server.Param(c, "id")
+	id := c.Param("id")
 
 	q := {{.CapitalName}}{
 		ID:   id,
@@ -14,15 +14,15 @@ func (b *bundle) prepare(c server.Context) {{.CapitalName}} {
 	return q
 }
 
-func (b *bundle) handler(f ModelHandler) server.HttpHandler {
+func (b *bundle) handler(f ModelHandler) server.HandlerFunc {
 	return func(c server.Context) error {
 		query := b.prepare(c)
 
 		result, err := f(query)
 		if err != nil {
-			return b.server.Error(c, 500, err)
+			return c.Error(500, err)
 		}
 
-		return b.server.JSON(c, result)
+		return c.JSON(200, result)
 	}
 }
