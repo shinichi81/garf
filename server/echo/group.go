@@ -14,20 +14,24 @@ type echoGroup struct {
 	group *echo.Group
 }
 
-func (g *echoGroup) contextWrap(h server.HandlerFunc) func(*echo.Context) error {
-	return func(c *echo.Context) (result error) {
-		ec := g.pool.Get().(*echoContext)
-		ec.ctx = c
-		result = h(ec)
-		g.pool.Put(ec)
-		return
+func (g *echoGroup) contextWrap(h server.HandlerFunc) echo.HandlerFunc {
+	switch h := h.(type) {
+	case func(server.Context) error:
+		return func(c *echo.Context) (result error) {
+			ec := g.pool.Get().(*echoContext)
+			ec.ctx = c
+			ec.server = g
+			result = h(ec)
+			g.pool.Put(ec)
+			return
+		}
+	default:
+		return h.(echo.HandlerFunc)
 	}
 }
 
 func (g *echoGroup) middlewareWrap(m server.Middleware) server.Middleware {
 	switch m := m.(type) {
-	case server.HandlerFunc:
-		return g.contextWrap(m)
 	case func(server.Context) error:
 		return g.contextWrap(m)
 	default:

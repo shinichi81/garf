@@ -5,7 +5,6 @@ import (
 
 	"github.com/backenderia/garf/server"
 	"github.com/labstack/echo"
-	"golang.org/x/net/websocket"
 )
 
 type echoHandler struct {
@@ -52,28 +51,4 @@ func (e *echoHandler) Group(d string) server.Router {
 		return NewEchoContext()
 	}
 	return group
-}
-
-// Param forwards to echo.Context.Param
-func (e *echoHandler) Param(c server.Context, d string) string {
-	ec := c.(*echoContext)
-	return ec.ctx.Param(d)
-}
-
-// Form forwards to echo.Context.Form
-func (e *echoHandler) Form(c server.Context, d string) string {
-	ec := c.(*echoContext)
-	return ec.ctx.Form(d)
-}
-
-// Query forwards to echo.Context.Query
-func (e *echoHandler) Query(c server.Context, d string) string {
-	ec := c.(*echoContext)
-	return ec.ctx.Query(d)
-}
-
-// File forwards to echo.Context.File
-func (e *echoHandler) Socket(c server.Context) *websocket.Conn {
-	ec := c.(*echoContext)
-	return ec.ctx.Socket()
 }

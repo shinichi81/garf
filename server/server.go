@@ -8,7 +8,7 @@ import (
 
 // Handler alias for any interface that handles requests
 type Handler interface{}
-type HandlerFunc func(Context) error
+type HandlerFunc interface{}
 type Middleware interface{}
 
 // Support represents the HTTP server interface
@@ -16,8 +16,6 @@ type Support interface {
 	Configure()
 	Run(string)
 	Router
-	ContextInfo
-	RESTResponse
 }
 
 type Router interface {
@@ -34,15 +32,6 @@ type Router interface {
 	Head(string, HandlerFunc)
 	WebSocket(string, HandlerFunc)
 	Handle(string, string, HandlerFunc)
-}
-
-type RESTResponse interface {
-	Error(Context, int, ...interface{}) error
-	XML(Context, interface{}) error
-	JSON(Context, interface{}) error
-	HTML(Context, int, string, ...interface{}) error
-	String(Context, int, string, ...interface{}) error
-	NoContent(Context, int) error
 }
 
 // Default behavior for Server methods
