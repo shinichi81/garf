@@ -6,7 +6,7 @@ import (
 )
 
 const (
-    basePath = "/{{.LowerName}}/"
+    basePath = "/{{.LowerName}}"
 )
 
 type bundle struct {}
@@ -21,10 +21,10 @@ func (b *bundle) Init(config map[string]interface{}) {
 }
 
 // Register is called to register all routes from this bundle
-func (b *bundle) Register(r server.Handler) {
-	r.Get(basePath+"/user/", b.handler(List))
+func (b *bundle) Register(r server.Support) {
+	r.Get(basePath+"/", b.handler(List))
 	r.Post(basePath+"/", b.handler(Create))
 	r.Get(basePath+"/:id", b.handler(Read))
-	r.Post(basePath+"/:id", b.handler(Update))
+	r.Put(basePath+"/:id", b.handler(Update))
 	r.Del(basePath+"/:id", b.handler(Delete))
 }

@@ -59,8 +59,9 @@ func (r *registry) Get(key string) {
 
 // Configure all routes
 func (r *registry) Configure() {
+	settings := r.config.AllSettings()
 	for _, bd := range r.bundles {
-		bd.Init(r.config.AllSettings())
+		bd.Init(settings)
 	}
 	r.server.Configure()
 }
